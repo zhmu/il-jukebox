@@ -1,0 +1,8 @@
+This is jukebox, a fully featured Jukebox server. It is designed to entertaint
+you by playing tracks for you as you do your tasks.
+
+It requires lib++, which is used for database management, configuration files
+and networking.
+
+Should any bugs or problems be encountered, feel free to contact
+jukebox at il dot fontys dot nl

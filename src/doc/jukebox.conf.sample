@@ -1,0 +1,123 @@
+[general]
+# the port to which jukebox binds itself
+port = 4444
+
+# the user and group to run as
+user = jukebox
+group = audio
+
+# should identd (RFC1413) be allowed for authentication?
+allow_ident = no
+
+# if allow_ident is set, the following option is a
+# space-separated list of all IP addresses which are
+# allowed to use the IDENT command. if unset, anyone may use it
+allow_ident_from = 127.0.0.1
+
+# chroot to this location
+chroot = /home/jukebox
+
+# allow querying of status before login
+allow_anonymous_status = no
+
+[log]
+# type, stdlog or stderr
+type = stderr
+
+# log ip addresses as well as usernames for each command
+ip = yes
+
+# log every track or album enqueuement
+enqueue = yes
+
+# log complete track information on remove
+remove = yes
+
+[database]
+# information needed to connect to the database
+type = mysql
+hostname = localhost
+username = jukebox
+password = jukebox
+dbname = jukebox
+
+[tag_quality]
+# score of each tag
+title = 10
+artist = 10
+album = 10
+year = 1
+tracknum = 1
+
+# total score required to add a file
+required = 30
+
+[modules]
+# artist and album all soundblaster modules (MOD, XM, S3M etc) will get
+artist = Modules
+album = Soundblaster
+
+[adlib]
+# artist and album all adlib modules (RAD, HSC etc) will get
+artist = Modules
+album = Adlib
+
+[privileges]
+# default privileges: if a privilege is unspecified, this will be used
+*default* = admin
+
+# privilege levels required for each command
+pause = user
+continue = user
+stop = anon
+play = anon
+next = anon
+random = anon
+remove = user
+clear = admin
+enqueuetrack = anon
+enqueuealbum = anon
+
+[mixer]
+# the device to use
+device = /dev/mixer0
+
+# the source to alter (pcm or master)
+source = pcm
+
+[userdb]
+# backend in which the users are stored
+backends = sql,ldap
+
+# ldap version number. defaults to 2
+ldap_version = 3
+
+# ldap host(s) used to connect
+ldap_host = ldap
+
+# ldap base dn
+ldap_basedn = ou=People,dc=il,dc=fontys,dc=nl
+
+# membership of these LDAP groups will give the user administrative rights
+# separate with comma's
+ldap_admin_groups = beheer,bestuur
+
+# attribute used to look up account information
+ldap_login_attr = uid
+
+[player]
+# command used to play each file type, based on extension
+# filename is automatically appended
+mp3 = /usr/local/bin/mpg123 -q
+ogg = /usr/local/bin/ogg123 -q
+mod = /usr/local/bin/mikmod -q --playmode 1
+s3m = /usr/local/bin/mikmod -q --playmode 1
+it = /usr/local/bin/mikmod -q --playmode 1
+stm = /usr/local/bin/mikmod -q --playmode 1
+rad = /usr/local/bin/adplay --16bit -f48000 --stereo -Ooss -o
+laa = /usr/local/bin/adplay --16bit -f48000 --stereo -Ooss -o
+lds = /usr/local/bin/adplay --16bit -f48000 --stereo -Ooss -o
+sci = /usr/local/bin/adplay --16bit -f48000 --stereo -Ooss -o
+lds = /usr/local/bin/adplay --16bit -f48000 --stereo -Ooss -o
+d00 = /usr/local/bin/adplay --16bit -f48000 --stereo -Ooss -o
+sa2 = /usr/local/bin/adplay --16bit -f48000 --stereo -Ooss -o

@@ -1,0 +1,15 @@
+I'd like to thank the following people/organisations for their support:
+
+- Dispuut Interlink, http://www.il.fontys.nl
+  This is were Jukebox was used from the start, and were most bugs were found.
+
+- Peter Koeleman <peerkoel at il dot fontys dot nl>
+  He submitted some improvements
+
+- Michael Smith <msmith at labyrinth dot net dot au>
+  vcedit.c and vcedit.h, the Ogg Vorbis Tag Reader code, was copied with minor
+  modifications from his GTK Ogg Vorbis Tag Editor. It is available from
+  http://sourceforge.net/projects/oggeditor/
+
+- Willem van Engen <wvengen at stack dot nl>
+  He helped with some suggestions and ideas

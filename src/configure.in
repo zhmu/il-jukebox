@@ -1,0 +1,128 @@
+# process this file with autoconf to generate a configure script
+AC_INIT(src/main.cc)
+AM_INIT_AUTOMAKE(jukebox, 1.0)
+
+# check for programs
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_RANLIB
+#AC_CHECK_PROG(PKGCONFIG,[pkg-config],[yes],[no],[],[])
+#if test "$PKGCONFIG" = "no"; then
+#	AC_MSG_ERROR([*** pkg-config is required])
+#fi
+
+# C++! yeah!
+AC_LANG([C++])
+
+# we need C++ to compile
+AC_REQUIRE_CPP
+
+# check for header files
+AC_HEADER_STDC
+AC_CHECK_HEADERS([fcntl.h netinet/in.h string.h sys/signal.h])
+
+# check for typedefs, structures  and compile characteristics.
+AC_C_CONST
+AC_TYPE_SIZE_T
+AC_HEADER_TIME
+
+# check for library functions
+AC_PROG_GCC_TRADITIONAL
+AC_FUNC_VPRINTF
+
+# does pkg-config know anything about libplusplus?
+#echo -n "checking whether libplusplus is installed... "
+#pkg-config --exists libplusplus
+#if test "$?" = "1"; then
+#	echo "no"
+#	AC_MSG_ERROR([*** libplusplus must be installed])
+#fi
+#echo "yes"
+
+# check for libplusplus
+PKG_CHECK_MODULES(LIBPLUSPLUS, libplusplus >= 1.0)
+AC_SUBST(LIBPLUSPLUS_CFLAGS)
+AC_SUBST(LIBPLUSPLUS_LIBS)
+
+# check if libid3 paths are overridden
+# some versions of libid3 need libz
+# is needed for libid3, so add -lz to LDFLAGS ... (hack?)
+AC_ARG_WITH(id3lib,
+[  --with-id3lib=dir         Look for id3 libs/includes in DIR],
+[
+	LDFLAGS="$LDFLAGS -L$with_id3lib/lib -lz"
+	CPPFLAGS="$CPPFLAGS -I$with_id3lib/include"
+])
+
+# check for libid3
+AC_LANG_PUSH(C++)
+CXXFLAGS="$CXXFLAGS -lz"
+AC_CHECK_LIB(id3, [ID3Tag_New], [MP3=1], [MP3=0])
+AC_LANG_POP(C++)
+
+# check if ogg paths are overridden
+AC_ARG_WITH(ogg,
+[  --with-ogg=dir            Look for Ogg Vorbis libs/includes in DIR],
+[
+	LDFLAGS="$LDFLAGS -L$with_ogg/lib"
+	CPPFLAGS="$CPPFLAGS -I$with_ogg/include"
+])
+
+# check for libvorbis and libogg
+AC_CHECK_LIB(vorbis, [ogg_stream_init], [VORBIS=1], [VORBIS=0])
+AC_CHECK_LIB(ogg, [oggpack_get_buffer], [OGG=1], [OGG=0])
+
+# check for LDAP user database
+AC_ARG_WITH(ldap,
+[  --with-ldap=dir           Look for LDAP libs/includes in DIR],
+[
+	LDFLAGS="$LDFLAGS -L$with_ldap/lib"
+	CPPFLAGS="$CPPFLAGS -I$with_ldap/include"
+])
+AC_CHECK_LIB(ldap, [ldap_init], [LDAP=1], [LDAP=0])
+
+# subsitute values as needed
+#LDLIBPLUSPLUS=`pkg-config --libs libplusplus`
+#AC_SUBST(LDLIBPLUSPLUS)
+#CFLIBPLUSPLUS=`pkg-config --cflags libplusplus`
+#AC_SUBST(CFLIBPLUSPLUS)
+
+# print a summary (and silently set some options ;)
+echo
+echo "Summary"
+echo "-------"
+echo -n "MP3 tag support        : "
+if test "$MP3" = 1; then
+	echo " yes"
+	HAVE_ID3="-DMP3_SUPPORT"
+	LIBS_ID3="-lid3"
+	AC_SUBST(HAVE_ID3)
+	AC_SUBST(LIBS_ID3)
+else
+	echo " no"
+fi
+echo -n "Ogg Vorbis tag support : "
+if test "$VORBIS" = 1; then
+	if test "$OGG" = 1; then
+		echo " yes"
+		HAVE_OGGVORBIS="-DOGG_SUPPORT"
+		LIBS_OGGVORBIS="-logg -lvorbis"
+		AC_SUBST(LIBS_OGGVORBIS)
+		AC_SUBST(HAVE_OGGVORBIS)
+	else
+		echo " no"
+	fi
+else
+	echo " no"
+fi
+echo -n "User database          : "
+if test "$LDAP" = 1; then
+	echo -n " LDAP"
+	LDFLAGS="$LDFLAGS -lldap"
+	USERDB="$USERDB -DUSERDB_LDAP"
+fi
+echo " SQL"
+USERDB="$USERDB -DUSERDB_SQL"
+AC_SUBST(USERDB)
+
+AC_OUTPUT([Makefile src/Makefile doc/Makefile])

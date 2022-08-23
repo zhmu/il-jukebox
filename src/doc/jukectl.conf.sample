@@ -1,0 +1,14 @@
+# this file should be saved as .jukectl.conf in your home directory
+
+[general]
+port = 4444
+hostname = localhost
+username = user
+
+# specify a password here to automatically log on.
+# if not specified, a password will be requested
+password = password
+
+# if this is enabled, IDENT authentication will be
+# tried before sending the password
+use_ident = yes
